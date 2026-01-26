@@ -263,6 +263,10 @@ export default function Lab1() {
         Please
         <a href="https://www.lipsum.com" id="wd-lipsum">click here</a>
         to get dummy text<br />
+
+        Please
+        <a href="https://github.com/vildzi/cs4550a1" id="wd-lipsum">click here</a>
+        to view the source code<br />
       </div>
     </div>
   );
