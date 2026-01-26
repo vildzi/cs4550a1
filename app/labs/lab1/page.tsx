@@ -265,7 +265,7 @@ export default function Lab1() {
         to get dummy text<br />
 
         Please
-        <a href="https://github.com/vildzi/cs4550a1" id="wd-lipsum">click here</a>
+        <a href="https://github.com/vildzi/cs4550a1" id="wd-github">click here</a>
         to view the source code<br />
       </div>
     </div>
