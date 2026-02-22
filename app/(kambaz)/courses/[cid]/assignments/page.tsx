@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
@@ -6,8 +8,15 @@ import { BsPlus } from "react-icons/bs";
 import { MdAssignment } from "react-icons/md";
 import AssignmentsControls from "./AssignmentsControls";
 import AssignmentControlButtons from "./AssignmentControlButtons";
+import * as db from "../../../database";
+import { useParams } from "next/navigation";
 
 export default function Assignments() {
+  const { cid } = useParams<{ cid: string }>();
+  const assignments = db.assignments.filter((assignment: any) => assignment.course === cid);
+  const formatDate = (date: string) =>
+    new Date(`${date}T00:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
   return (
     <div id="wd-assignments">
       <AssignmentsControls /><br /><br /><br /><br />
@@ -25,60 +34,34 @@ export default function Assignments() {
             </div>
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            <ListGroupItem className="wd-lesson p-3 ps-1 d-flex align-items-center" style={{ borderLeft: "4px solid green" }}>
-              <BsGripVertical className="me-2 fs-3" />
-              <MdAssignment className="me-3 fs-3 text-success" />
-              <div className="flex-grow-1">
-                <Link href="/courses/1234/assignments/123" className="wd-assignment-link text-dark fw-bold text-decoration-none">
-                  A1
-                </Link>
-                <br />
-                <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                  <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 6 at 12:00am |
-                </span>
-                <br />
-                <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                  <b>Due</b> May 13 at 11:59pm | 100 pts
-                </span>
-              </div>
-              <AssignmentControlButtons />
-            </ListGroupItem>
-            <ListGroupItem className="wd-lesson p-3 ps-1 d-flex align-items-center" style={{ borderLeft: "4px solid green" }}>
-              <BsGripVertical className="me-2 fs-3" />
-              <MdAssignment className="me-3 fs-3 text-success" />
-              <div className="flex-grow-1">
-                <Link href="/courses/1234/assignments/124" className="wd-assignment-link text-dark fw-bold text-decoration-none">
-                  A2
-                </Link>
-                <br />
-                <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                  <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 13 at 12:00am |
-                </span>
-                <br />
-                <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                  <b>Due</b> May 20 at 11:59pm | 100 pts
-                </span>
-              </div>
-              <AssignmentControlButtons />
-            </ListGroupItem>
-            <ListGroupItem className="wd-lesson p-3 ps-1 d-flex align-items-center" style={{ borderLeft: "4px solid green" }}>
-              <BsGripVertical className="me-2 fs-3" />
-              <MdAssignment className="me-3 fs-3 text-success" />
-              <div className="flex-grow-1">
-                <Link href="/courses/1234/assignments/125" className="wd-assignment-link text-dark fw-bold text-decoration-none">
-                  A3
-                </Link>
-                <br />
-                <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                  <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 20 at 12:00am |
-                </span>
-                <br />
-                <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                  <b>Due</b> May 27 at 11:59pm | 100 pts
-                </span>
-              </div>
-              <AssignmentControlButtons />
-            </ListGroupItem>
+            {assignments.map((assignment: any) => (
+              <ListGroupItem
+                key={assignment._id}
+                className="wd-lesson p-3 ps-1 d-flex align-items-center"
+                style={{ borderLeft: "4px solid green" }}
+              >
+                <BsGripVertical className="me-2 fs-3" />
+                <MdAssignment className="me-3 fs-3 text-success" />
+                <div style={{ flexGrow: 1 }}>
+                  <Link
+                    href={`/courses/${cid}/assignments/${assignment._id}`}
+                    className="wd-assignment-link text-dark fw-bold text-decoration-none"
+                  >
+                    {assignment.name}
+                  </Link>
+                  <br />
+                  <span className="text-muted" style={{ fontSize: "0.85rem" }}>
+                    <span className="text-danger">{assignment.assignmentGroup}</span> |{" "}
+                    <b>Not available until</b> {formatDate(assignment.availableUntil)} |
+                  </span>
+                  <br />
+                  <span className="text-muted" style={{ fontSize: "0.85rem" }}>
+                    <b>Due</b> {formatDate(assignment.dueDate)} | {assignment.points} pts
+                  </span>
+                </div>
+                <AssignmentControlButtons />
+              </ListGroupItem>
+            ))}
           </ListGroup>
         </ListGroupItem>
       </ListGroup>

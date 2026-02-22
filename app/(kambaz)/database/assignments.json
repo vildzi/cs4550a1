@@ -1,0 +1,191 @@
+[
+  {
+    "_id": "A101",
+    "course": "RS101",
+    "name": "A1 - Propulsion Concepts",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Explain thrust, specific impulse, and burn efficiency with one worked example.",
+    "points": 100,
+    "assignmentGroup": "ASSIGNMENTS",
+    "displayGradeAs": "Points",
+    "submissionType": "Online",
+    "onlineEntryOptions": {
+      "textEntry": true,
+      "websiteUrl": true,
+      "mediaRecordings": false,
+      "studentAnnotation": false,
+      "fileUploads": true
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-05-13",
+    "availableFrom": "2024-05-06",
+    "availableUntil": "2024-05-20"
+  },
+  {
+    "_id": "A102",
+    "course": "RS101",
+    "name": "A2 - Combustion Analysis",
+    "description": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Compare solid and liquid propellant combustion models.",
+    "points": 100,
+    "assignmentGroup": "ASSIGNMENTS",
+    "displayGradeAs": "Points",
+    "submissionType": "Online",
+    "onlineEntryOptions": {
+      "textEntry": true,
+      "websiteUrl": true,
+      "mediaRecordings": false,
+      "studentAnnotation": true,
+      "fileUploads": true
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-05-20",
+    "availableFrom": "2024-05-13",
+    "availableUntil": "2024-05-27"
+  },
+  {
+    "_id": "A103",
+    "course": "RS101",
+    "name": "A3 - Nozzle Design",
+    "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Design a converging-diverging nozzle and justify assumptions.",
+    "points": 150,
+    "assignmentGroup": "PROJECT",
+    "displayGradeAs": "Points",
+    "submissionType": "Online",
+    "onlineEntryOptions": {
+      "textEntry": false,
+      "websiteUrl": true,
+      "mediaRecordings": true,
+      "studentAnnotation": false,
+      "fileUploads": true
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-05-27",
+    "availableFrom": "2024-05-20",
+    "availableUntil": "2024-06-03"
+  },
+  {
+    "_id": "A201",
+    "course": "RS102",
+    "name": "Q1 - Aerodynamics Checkpoint",
+    "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Short quiz on lift and drag fundamentals.",
+    "points": 25,
+    "assignmentGroup": "QUIZZES",
+    "displayGradeAs": "Percentage",
+    "submissionType": "Online",
+    "onlineEntryOptions": {
+      "textEntry": false,
+      "websiteUrl": false,
+      "mediaRecordings": false,
+      "studentAnnotation": false,
+      "fileUploads": false
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-05-10",
+    "availableFrom": "2024-05-08",
+    "availableUntil": "2024-05-10"
+  },
+  {
+    "_id": "A202",
+    "course": "RS102",
+    "name": "A1 - Flow Visualization",
+    "description": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Analyze flow separation from wind tunnel images.",
+    "points": 80,
+    "assignmentGroup": "ASSIGNMENTS",
+    "displayGradeAs": "Points",
+    "submissionType": "In Person",
+    "onlineEntryOptions": {
+      "textEntry": false,
+      "websiteUrl": false,
+      "mediaRecordings": false,
+      "studentAnnotation": false,
+      "fileUploads": false
+    },
+    "assignTo": "Section S101",
+    "dueDate": "2024-05-24",
+    "availableFrom": "2024-05-17",
+    "availableUntil": "2024-05-24"
+  },
+  {
+    "_id": "A203",
+    "course": "RS102",
+    "name": "A2 - Thermal Effects",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. Evaluate heating on high-speed surfaces and mitigation strategies.",
+    "points": 90,
+    "assignmentGroup": "ASSIGNMENTS",
+    "displayGradeAs": "Points",
+    "submissionType": "Online",
+    "onlineEntryOptions": {
+      "textEntry": true,
+      "websiteUrl": false,
+      "mediaRecordings": false,
+      "studentAnnotation": true,
+      "fileUploads": true
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-05-31",
+    "availableFrom": "2024-05-24",
+    "availableUntil": "2024-06-07"
+  },
+  {
+    "_id": "A301",
+    "course": "RS103",
+    "name": "A1 - Structural Tradeoffs",
+    "description": "Magna etiam tempor orci eu lobortis elementum nibh tellus molestie nunc. Compare mass and strength tradeoffs across three structural materials.",
+    "points": 110,
+    "assignmentGroup": "ASSIGNMENTS",
+    "displayGradeAs": "Points",
+    "submissionType": "Online",
+    "onlineEntryOptions": {
+      "textEntry": true,
+      "websiteUrl": true,
+      "mediaRecordings": false,
+      "studentAnnotation": false,
+      "fileUploads": true
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-06-03",
+    "availableFrom": "2024-05-27",
+    "availableUntil": "2024-06-10"
+  },
+  {
+    "_id": "A302",
+    "course": "RS103",
+    "name": "A2 - Orbital Calculations",
+    "description": "Nibh ipsum consequat nisl vel pretium lectus quam id leo in vitae. Compute transfer orbits and report delta-v requirements.",
+    "points": 120,
+    "assignmentGroup": "ASSIGNMENTS",
+    "displayGradeAs": "Points",
+    "submissionType": "Online",
+    "onlineEntryOptions": {
+      "textEntry": true,
+      "websiteUrl": false,
+      "mediaRecordings": false,
+      "studentAnnotation": false,
+      "fileUploads": true
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-06-10",
+    "availableFrom": "2024-06-03",
+    "availableUntil": "2024-06-17"
+  },
+  {
+    "_id": "A303",
+    "course": "RS103",
+    "name": "Midterm - Systems Engineering",
+    "description": "Faucibus ornare suspendisse sed nisi lacus sed viverra tellus in hac habitasse. Written exam covering mission architecture and subsystem integration.",
+    "points": 200,
+    "assignmentGroup": "EXAMS",
+    "displayGradeAs": "Letter",
+    "submissionType": "In Person",
+    "onlineEntryOptions": {
+      "textEntry": false,
+      "websiteUrl": false,
+      "mediaRecordings": false,
+      "studentAnnotation": false,
+      "fileUploads": false
+    },
+    "assignTo": "Everyone",
+    "dueDate": "2024-06-14",
+    "availableFrom": "2024-06-14",
+    "availableUntil": "2024-06-14"
+  }
+]

@@ -1,21 +1,29 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { Button, Col, Form, FormCheck, FormControl, FormLabel, FormSelect, Row } from "react-bootstrap";
+import * as db from "../../../../database";
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams<{ cid: string; aid: string }>();
+  const assignment = db.assignments.find((item: any) => item.course === cid && item._id === aid);
+  if (!assignment) {
+    return <div className="p-3">Assignment not found.</div>;
+  }
+
   return (
     <div id="wd-assignments-editor" className="container">
       <Form>
         <Form.Group className="mb-3" controlId="wd-name">
           <FormLabel>Assignment Name</FormLabel>
-          <FormControl defaultValue="A1 - ENV + HTML" />
+          <FormControl defaultValue={assignment.name} />
         </Form.Group>
 
         <Form.Group className="mb-4" controlId="wd-description">
           <FormControl
             as="textarea"
             rows={8}
-            defaultValue={`The assignment is available online Submit a link to the landing page of your Web application running on Netlify. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kanbas application Links to all relevant source code repositories The Kanbas application should include a link to navigate back to the landing page.`}
+            defaultValue={assignment.description}
           />
         </Form.Group>
 
@@ -24,7 +32,7 @@ export default function AssignmentEditor() {
             Points
           </FormLabel>
           <Col sm={9}>
-            <FormControl defaultValue={100} />
+            <FormControl defaultValue={assignment.points} />
           </Col>
         </Form.Group>
 
@@ -33,7 +41,7 @@ export default function AssignmentEditor() {
             Assignment Group
           </FormLabel>
           <Col sm={9}>
-            <FormSelect>
+            <FormSelect defaultValue={assignment.assignmentGroup}>
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
               <option value="QUIZZES">QUIZZES</option>
               <option value="EXAMS">EXAMS</option>
@@ -47,7 +55,7 @@ export default function AssignmentEditor() {
             Display Grade as
           </FormLabel>
           <Col sm={9}>
-            <FormSelect>
+            <FormSelect defaultValue={assignment.displayGradeAs}>
               <option value="Percentage">Percentage</option>
               <option value="Letter">Letter</option>
               <option value="Points">Points</option>
@@ -60,7 +68,7 @@ export default function AssignmentEditor() {
             Submission Type
           </FormLabel>
           <Col sm={9}>
-            <FormSelect>
+            <FormSelect defaultValue={assignment.submissionType}>
               <option value="Online">Online</option>
               <option value="In Person">In Person</option>
             </FormSelect>
@@ -72,11 +80,11 @@ export default function AssignmentEditor() {
           <Col sm={9}>
             <div className="border rounded p-3">
               <FormLabel className="fw-bold">Online Entry Options</FormLabel>
-              <FormCheck label="Text Entry" id="wd-text-entry" />
-              <FormCheck label="Website URL" id="wd-website-url" defaultChecked />
-              <FormCheck label="Media Recordings" id="wd-media-recordings" />
-              <FormCheck label="Student Annotation" id="wd-student-annotation" />
-              <FormCheck label="File Uploads" id="wd-file-uploads" />
+              <FormCheck label="Text Entry" id="wd-text-entry" defaultChecked={assignment.onlineEntryOptions?.textEntry} />
+              <FormCheck label="Website URL" id="wd-website-url" defaultChecked={assignment.onlineEntryOptions?.websiteUrl} />
+              <FormCheck label="Media Recordings" id="wd-media-recordings" defaultChecked={assignment.onlineEntryOptions?.mediaRecordings} />
+              <FormCheck label="Student Annotation" id="wd-student-annotation" defaultChecked={assignment.onlineEntryOptions?.studentAnnotation} />
+              <FormCheck label="File Uploads" id="wd-file-uploads" defaultChecked={assignment.onlineEntryOptions?.fileUploads} />
             </div>
           </Col>
         </Form.Group>
@@ -89,20 +97,20 @@ export default function AssignmentEditor() {
             <div className="border rounded p-3">
               <Form.Group className="mb-3" controlId="wd-assign-to">
                 <FormLabel>Assign to</FormLabel>
-                <FormControl defaultValue="Everyone" />
+                <FormControl defaultValue={assignment.assignTo} />
               </Form.Group>
               <Form.Group className="mb-3" controlId="wd-due-date">
                 <FormLabel>Due</FormLabel>
-                <FormControl type="date" defaultValue="2024-05-13" />
+                <FormControl type="date" defaultValue={assignment.dueDate} />
               </Form.Group>
               <Row>
                 <Form.Group as={Col} md={6} controlId="wd-available-from">
                   <FormLabel>Available from</FormLabel>
-                  <FormControl type="date" defaultValue="2024-05-06" />
+                  <FormControl type="date" defaultValue={assignment.availableFrom} />
                 </Form.Group>
                 <Form.Group as={Col} md={6} controlId="wd-available-until">
                   <FormLabel>Until</FormLabel>
-                  <FormControl type="date" defaultValue="2024-05-20" />
+                  <FormControl type="date" defaultValue={assignment.availableUntil} />
                 </Form.Group>
               </Row>
             </div>
