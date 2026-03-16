@@ -1,29 +1,91 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Button, Col, Form, FormCheck, FormControl, FormLabel, FormSelect, Row } from "react-bootstrap";
-import * as db from "../../../../database";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../store";
+import { addAssignment, Assignment, updateAssignment } from "../../../assignments/reducer";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
-  const assignment = db.assignments.find((item: any) => item.course === cid && item._id === aid);
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
+
+  const [assignment, setAssignment] = useState<Assignment | null>(() => {
+    const existingAssignment = assignments.find((item: Assignment) => item.course === cid && item._id === aid);
+    if (existingAssignment) {
+      return existingAssignment;
+    }
+    if (aid === "new") {
+      return {
+        _id: "new",
+        course: cid,
+        name: "New Assignment",
+        description: "",
+        points: 100,
+        assignmentGroup: "ASSIGNMENTS",
+        displayGradeAs: "Points",
+        submissionType: "Online",
+        onlineEntryOptions: {
+          textEntry: true,
+          websiteUrl: false,
+          mediaRecordings: false,
+          studentAnnotation: false,
+          fileUploads: true,
+        },
+        assignTo: "Everyone",
+        dueDate: "",
+        availableFrom: "",
+        availableUntil: "",
+      };
+    }
+    return null;
+  });
+
   if (!assignment) {
     return <div className="p-3">Assignment not found.</div>;
   }
+
+  const saveAssignment = () => {
+    if (!canEdit) {
+      router.push(`/courses/${cid}/assignments`);
+      return;
+    }
+    if (aid === "new") {
+      dispatch(addAssignment(assignment));
+    } else {
+      dispatch(updateAssignment(assignment));
+    }
+    router.push(`/courses/${cid}/assignments`);
+  };
+
+  const cancel = () => {
+    router.push(`/courses/${cid}/assignments`);
+  };
 
   return (
     <div id="wd-assignments-editor" className="container">
       <Form>
         <Form.Group className="mb-3" controlId="wd-name">
           <FormLabel>Assignment Name</FormLabel>
-          <FormControl defaultValue={assignment.name} />
+          <FormControl
+            value={assignment.name}
+            disabled={!canEdit}
+            onChange={(e) => setAssignment({ ...assignment, name: e.target.value })}
+          />
         </Form.Group>
 
         <Form.Group className="mb-4" controlId="wd-description">
           <FormControl
             as="textarea"
             rows={8}
-            defaultValue={assignment.description}
+            value={assignment.description}
+            disabled={!canEdit}
+            onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}
           />
         </Form.Group>
 
@@ -32,7 +94,11 @@ export default function AssignmentEditor() {
             Points
           </FormLabel>
           <Col sm={9}>
-            <FormControl defaultValue={assignment.points} />
+            <FormControl
+              value={assignment.points}
+              disabled={!canEdit}
+              onChange={(e) => setAssignment({ ...assignment, points: parseInt(e.target.value, 10) || 0 })}
+            />
           </Col>
         </Form.Group>
 
@@ -41,7 +107,11 @@ export default function AssignmentEditor() {
             Assignment Group
           </FormLabel>
           <Col sm={9}>
-            <FormSelect defaultValue={assignment.assignmentGroup}>
+            <FormSelect
+              value={assignment.assignmentGroup}
+              disabled={!canEdit}
+              onChange={(e) => setAssignment({ ...assignment, assignmentGroup: e.target.value })}
+            >
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
               <option value="QUIZZES">QUIZZES</option>
               <option value="EXAMS">EXAMS</option>
@@ -55,7 +125,11 @@ export default function AssignmentEditor() {
             Display Grade as
           </FormLabel>
           <Col sm={9}>
-            <FormSelect defaultValue={assignment.displayGradeAs}>
+            <FormSelect
+              value={assignment.displayGradeAs}
+              disabled={!canEdit}
+              onChange={(e) => setAssignment({ ...assignment, displayGradeAs: e.target.value })}
+            >
               <option value="Percentage">Percentage</option>
               <option value="Letter">Letter</option>
               <option value="Points">Points</option>
@@ -68,7 +142,11 @@ export default function AssignmentEditor() {
             Submission Type
           </FormLabel>
           <Col sm={9}>
-            <FormSelect defaultValue={assignment.submissionType}>
+            <FormSelect
+              value={assignment.submissionType}
+              disabled={!canEdit}
+              onChange={(e) => setAssignment({ ...assignment, submissionType: e.target.value })}
+            >
               <option value="Online">Online</option>
               <option value="In Person">In Person</option>
             </FormSelect>
@@ -80,11 +158,66 @@ export default function AssignmentEditor() {
           <Col sm={9}>
             <div className="border rounded p-3">
               <FormLabel className="fw-bold">Online Entry Options</FormLabel>
-              <FormCheck label="Text Entry" id="wd-text-entry" defaultChecked={assignment.onlineEntryOptions?.textEntry} />
-              <FormCheck label="Website URL" id="wd-website-url" defaultChecked={assignment.onlineEntryOptions?.websiteUrl} />
-              <FormCheck label="Media Recordings" id="wd-media-recordings" defaultChecked={assignment.onlineEntryOptions?.mediaRecordings} />
-              <FormCheck label="Student Annotation" id="wd-student-annotation" defaultChecked={assignment.onlineEntryOptions?.studentAnnotation} />
-              <FormCheck label="File Uploads" id="wd-file-uploads" defaultChecked={assignment.onlineEntryOptions?.fileUploads} />
+              <FormCheck
+                label="Text Entry"
+                id="wd-text-entry"
+                checked={assignment.onlineEntryOptions?.textEntry}
+                disabled={!canEdit}
+                onChange={(e) =>
+                  setAssignment({
+                    ...assignment,
+                    onlineEntryOptions: { ...assignment.onlineEntryOptions, textEntry: e.target.checked },
+                  })
+                }
+              />
+              <FormCheck
+                label="Website URL"
+                id="wd-website-url"
+                checked={assignment.onlineEntryOptions?.websiteUrl}
+                disabled={!canEdit}
+                onChange={(e) =>
+                  setAssignment({
+                    ...assignment,
+                    onlineEntryOptions: { ...assignment.onlineEntryOptions, websiteUrl: e.target.checked },
+                  })
+                }
+              />
+              <FormCheck
+                label="Media Recordings"
+                id="wd-media-recordings"
+                checked={assignment.onlineEntryOptions?.mediaRecordings}
+                disabled={!canEdit}
+                onChange={(e) =>
+                  setAssignment({
+                    ...assignment,
+                    onlineEntryOptions: { ...assignment.onlineEntryOptions, mediaRecordings: e.target.checked },
+                  })
+                }
+              />
+              <FormCheck
+                label="Student Annotation"
+                id="wd-student-annotation"
+                checked={assignment.onlineEntryOptions?.studentAnnotation}
+                disabled={!canEdit}
+                onChange={(e) =>
+                  setAssignment({
+                    ...assignment,
+                    onlineEntryOptions: { ...assignment.onlineEntryOptions, studentAnnotation: e.target.checked },
+                  })
+                }
+              />
+              <FormCheck
+                label="File Uploads"
+                id="wd-file-uploads"
+                checked={assignment.onlineEntryOptions?.fileUploads}
+                disabled={!canEdit}
+                onChange={(e) =>
+                  setAssignment({
+                    ...assignment,
+                    onlineEntryOptions: { ...assignment.onlineEntryOptions, fileUploads: e.target.checked },
+                  })
+                }
+              />
             </div>
           </Col>
         </Form.Group>
@@ -97,20 +230,39 @@ export default function AssignmentEditor() {
             <div className="border rounded p-3">
               <Form.Group className="mb-3" controlId="wd-assign-to">
                 <FormLabel>Assign to</FormLabel>
-                <FormControl defaultValue={assignment.assignTo} />
+                <FormControl
+                  value={assignment.assignTo}
+                  disabled={!canEdit}
+                  onChange={(e) => setAssignment({ ...assignment, assignTo: e.target.value })}
+                />
               </Form.Group>
               <Form.Group className="mb-3" controlId="wd-due-date">
                 <FormLabel>Due</FormLabel>
-                <FormControl type="date" defaultValue={assignment.dueDate} />
+                <FormControl
+                  type="date"
+                  value={assignment.dueDate}
+                  disabled={!canEdit}
+                  onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })}
+                />
               </Form.Group>
               <Row>
                 <Form.Group as={Col} md={6} controlId="wd-available-from">
                   <FormLabel>Available from</FormLabel>
-                  <FormControl type="date" defaultValue={assignment.availableFrom} />
+                  <FormControl
+                    type="date"
+                    value={assignment.availableFrom}
+                    disabled={!canEdit}
+                    onChange={(e) => setAssignment({ ...assignment, availableFrom: e.target.value })}
+                  />
                 </Form.Group>
                 <Form.Group as={Col} md={6} controlId="wd-available-until">
                   <FormLabel>Until</FormLabel>
-                  <FormControl type="date" defaultValue={assignment.availableUntil} />
+                  <FormControl
+                    type="date"
+                    value={assignment.availableUntil}
+                    disabled={!canEdit}
+                    onChange={(e) => setAssignment({ ...assignment, availableUntil: e.target.value })}
+                  />
                 </Form.Group>
               </Row>
             </div>
@@ -119,8 +271,14 @@ export default function AssignmentEditor() {
 
         <hr />
         <div className="d-flex justify-content-end">
-          <Button variant="secondary" className="me-2">Cancel</Button>
-          <Button variant="danger">Save</Button>
+          <Button variant="secondary" type="button" className="me-2" id="wd-cancel-assignment-click" onClick={cancel}>
+            Cancel
+          </Button>
+          {canEdit && (
+            <Button variant="danger" type="button" id="wd-save-assignment-click" onClick={saveAssignment}>
+              Save
+            </Button>
+          )}
         </div>
       </Form>
     </div>

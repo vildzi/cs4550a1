@@ -1,22 +1,51 @@
-import { ReactNode } from "react";
+"use client";
+
+import { ReactNode, useEffect, useState } from "react";
 import CourseNavigation from "./Navigation";
 import { FaAlignJustify } from "react-icons/fa";
-import { courses } from "../../database";
-import Breadcrumb from "./Breadcrumb";
+import { useParams, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
-export default async function CoursesLayout(
-  { children, params }: Readonly<{ children: ReactNode; params: Promise<{ cid: string }> }>) {
-  const { cid } = await params;
+export default function CoursesLayout({ children }: Readonly<{ children: ReactNode }>) {
+  const { cid } = useParams<{ cid: string }>();
+  const router = useRouter();
+  const [showSidebar, setShowSidebar] = useState(true);
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
   const course = courses.find((course) => course._id === cid);
+  const enrolled = enrollments.some(
+    (enrollment) => enrollment.user === currentUser?._id && enrollment.course === cid,
+  );
+
+  useEffect(() => {
+    if (!currentUser) {
+      router.replace("/account/signin");
+      return;
+    }
+    if (!enrolled) {
+      router.replace("/dashboard");
+    }
+  }, [currentUser, enrolled, router]);
+
+  if (!currentUser || !enrolled) {
+    return null;
+  }
 
   return (
     <div id="wd-courses">
-      <Breadcrumb course={course} />
+      <h2>
+        <FaAlignJustify
+          className="me-4 fs-4 mb-1"
+          onClick={() => setShowSidebar(!showSidebar)}
+          style={{ cursor: "pointer" }}
+        />
+        {course?.name}
+      </h2>
       <hr />
       <div className="d-flex">
-        <div className="d-none d-md-block">
-          <CourseNavigation />
-        </div>
+        {showSidebar && <div className="d-none d-md-block"><CourseNavigation /></div>}
         <div className="flex-fill">
           {children}
         </div>

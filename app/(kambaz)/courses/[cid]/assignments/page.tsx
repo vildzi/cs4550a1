@@ -8,18 +8,33 @@ import { BsPlus } from "react-icons/bs";
 import { MdAssignment } from "react-icons/md";
 import AssignmentsControls from "./AssignmentsControls";
 import AssignmentControlButtons from "./AssignmentControlButtons";
-import * as db from "../../../database";
 import { useParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { Assignment, deleteAssignment as deleteAssignmentAction } from "../../assignments/reducer";
 
 export default function Assignments() {
   const { cid } = useParams<{ cid: string }>();
-  const assignments = db.assignments.filter((assignment: any) => assignment.course === cid);
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const dispatch = useDispatch();
+  const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
+  const courseAssignments = assignments.filter((assignment: Assignment) => assignment.course === cid);
   const formatDate = (date: string) =>
     new Date(`${date}T00:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
+  const deleteAssignment = (assignmentId: string) => {
+    if (!canEdit) {
+      return;
+    }
+    if (window.confirm("Are you sure you want to delete this assignment?")) {
+      dispatch(deleteAssignmentAction(assignmentId));
+    }
+  };
+
   return (
     <div id="wd-assignments">
-      <AssignmentsControls /><br /><br /><br /><br />
+      <AssignmentsControls canEdit={canEdit} /><br /><br /><br /><br />
       <ListGroup className="rounded-0" id="wd-assignment-list">
         <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray">
           <div className="wd-title p-3 ps-2 bg-secondary">
@@ -34,7 +49,7 @@ export default function Assignments() {
             </div>
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            {assignments.map((assignment: any) => (
+            {courseAssignments.map((assignment: Assignment) => (
               <ListGroupItem
                 key={assignment._id}
                 className="wd-lesson p-3 ps-1 d-flex align-items-center"
@@ -59,7 +74,11 @@ export default function Assignments() {
                     <b>Due</b> {formatDate(assignment.dueDate)} | {assignment.points} pts
                   </span>
                 </div>
-                <AssignmentControlButtons />
+                <AssignmentControlButtons
+                  assignmentId={assignment._id}
+                  canEdit={canEdit}
+                  deleteAssignment={deleteAssignment}
+                />
               </ListGroupItem>
             ))}
           </ListGroup>
