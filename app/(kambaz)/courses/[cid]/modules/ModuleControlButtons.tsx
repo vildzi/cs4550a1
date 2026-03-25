@@ -6,19 +6,21 @@ import { FaPencil } from "react-icons/fa6";
 
 export default function ModuleControlButtons({
   moduleId,
+  canEdit,
   deleteModule,
   editModule,
 }: {
   moduleId: string;
+  canEdit: boolean;
   deleteModule: (moduleId: string) => void;
   editModule: (moduleId: string) => void;
 }) {
   return (
     <div className="float-end">
-      <FaPencil onClick={() => editModule(moduleId)} className="text-primary me-3" />
-      <FaTrash className="text-danger me-2 mb-1" onClick={() => deleteModule(moduleId)} />
+      {canEdit && <FaPencil onClick={() => editModule(moduleId)} className="text-primary me-3" />}
+      {canEdit && <FaTrash className="text-danger me-2 mb-1" onClick={() => deleteModule(moduleId)} />}
       <GreenCheckmark />
-      <BsPlus className="fs-4" />
+      {canEdit && <BsPlus className="fs-4" />}
       <IoEllipsisVertical className="fs-4" />
     </div>
   );

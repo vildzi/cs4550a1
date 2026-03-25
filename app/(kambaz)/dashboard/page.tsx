@@ -32,7 +32,7 @@ export default function Dashboard() {
     }
   }, [currentUser, router]);
 
-  const isFaculty = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
+  const canManageCourses = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   const isEnrolled = (courseId: string) =>
     enrollments.some((enrollment) => enrollment.user === currentUser?._id && enrollment.course === courseId);
@@ -47,10 +47,16 @@ export default function Dashboard() {
   }, [courses, currentUser?._id, enrollments, showAllCourses]);
 
   const handleAddCourse = () => {
+    if (!canManageCourses) {
+      return;
+    }
     dispatch(addNewCourse(course));
   };
 
   const handleUpdateCourse = () => {
+    if (!canManageCourses) {
+      return;
+    }
     dispatch(updateCourse(course));
   };
 
@@ -75,7 +81,7 @@ export default function Dashboard() {
       <hr />
 
       <div className="d-flex align-items-center justify-content-between">
-        <h5 className="mb-0">New Course</h5>
+        <h5 className="mb-0">{canManageCourses ? "New Course" : "My Courses"}</h5>
         <Button
           variant={showAllCourses ? "secondary" : "primary"}
           onClick={() => setShowAllCourses(!showAllCourses)}
@@ -85,7 +91,7 @@ export default function Dashboard() {
         </Button>
       </div>
 
-      {isFaculty && (
+      {canManageCourses && (
         <>
           <div className="mt-2">
             <Button className="float-end me-2" variant="primary" id="wd-add-new-course-click" onClick={handleAddCourse}>
@@ -129,7 +135,7 @@ export default function Dashboard() {
                     </CardText>
                     <Button variant="primary">Go</Button>
 
-                    {isFaculty && (
+                    {canManageCourses && (
                       <>
                         <Button
                           onClick={(event) => {
@@ -145,6 +151,9 @@ export default function Dashboard() {
                         <Button
                           onClick={(event) => {
                             event.preventDefault();
+                            if (!canManageCourses) {
+                              return;
+                            }
                             dispatch(deleteCourse(course._id));
                           }}
                           id="wd-delete-course-click"

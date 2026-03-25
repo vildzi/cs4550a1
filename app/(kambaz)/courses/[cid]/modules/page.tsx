@@ -20,14 +20,20 @@ export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: RootState) => state.modulesReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const dispatch = useDispatch();
+  const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   return (
     <div>
       <ModulesControls
+        canEdit={canEdit}
         moduleName={moduleName}
         setModuleName={setModuleName}
         addModule={() => {
+          if (!canEdit) {
+            return;
+          }
           if (!moduleName.trim()) {
             return;
           }
@@ -43,8 +49,8 @@ export default function Modules() {
             <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray" key={module._id}>
               <div className="wd-title p-3 ps-2 bg-secondary">
                 <BsGripVertical className="me-2 fs-3" />
-                {!module.editing && module.name}
-                {module.editing && (
+                {(!module.editing || !canEdit) && module.name}
+                {module.editing && canEdit && (
                   <FormControl
                     className="w-50 d-inline-block"
                     onChange={(e) =>
@@ -60,8 +66,19 @@ export default function Modules() {
                 )}
                 <ModuleControlButtons
                   moduleId={module._id}
-                  deleteModule={(moduleId) => dispatch(deleteModule(moduleId))}
-                  editModule={(moduleId) => dispatch(editModule(moduleId))}
+                  canEdit={canEdit}
+                  deleteModule={(moduleId) => {
+                    if (!canEdit) {
+                      return;
+                    }
+                    dispatch(deleteModule(moduleId));
+                  }}
+                  editModule={(moduleId) => {
+                    if (!canEdit) {
+                      return;
+                    }
+                    dispatch(editModule(moduleId));
+                  }}
                 />
               </div>
               {module.lessons && (

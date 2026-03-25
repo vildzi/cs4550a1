@@ -7,10 +7,12 @@ import GreenCheckmark from "./GreenCheckmark";
 import ModuleEditor from "./ModuleEditor";
 
 export default function ModulesControls({
+  canEdit,
   moduleName,
   setModuleName,
   addModule,
 }: {
+  canEdit: boolean;
   moduleName: string;
   setModuleName: (title: string) => void;
   addModule: () => void;
@@ -21,10 +23,12 @@ export default function ModulesControls({
 
   return (
     <div id="wd-modules-controls" className="text-nowrap">
-      <Button variant="danger" size="lg" className="me-1 float-end" id="wd-add-module-btn" onClick={handleShow}>
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        Module
-      </Button>
+      {canEdit && (
+        <Button variant="danger" size="lg" className="me-1 float-end" id="wd-add-module-btn" onClick={handleShow}>
+          <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+          Module
+        </Button>
+      )}
       <Dropdown className="float-end me-2">
         <DropdownToggle variant="secondary" size="lg" id="wd-publish-all-btn">
           <GreenCheckmark /> Publish All
@@ -54,14 +58,16 @@ export default function ModulesControls({
         View Progress
       </Button>
 
-      <ModuleEditor
-        show={show}
-        handleClose={handleClose}
-        dialogTitle="Add Module"
-        moduleName={moduleName}
-        setModuleName={setModuleName}
-        addModule={addModule}
-      />
+      {canEdit && (
+        <ModuleEditor
+          show={show}
+          handleClose={handleClose}
+          dialogTitle="Add Module"
+          moduleName={moduleName}
+          setModuleName={setModuleName}
+          addModule={addModule}
+        />
+      )}
     </div>
   );
 }
