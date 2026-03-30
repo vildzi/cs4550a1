@@ -41,10 +41,21 @@ export default function Assignments() {
   const onAddAssignment = async () => {
     if (!cid) return;
     const newAssignment = await client.createAssignmentForCourse(cid, {
-      title: "New Assignment",
+      name: "New Assignment",
       description: "Edit this assignment",
       points: 100,
-      due: "2026-12-31",
+      assignmentGroup: "ASSIGNMENTS",
+      displayGradeAs: "Points",
+      submissionType: "Online",
+      onlineEntryOptions: {
+        textEntry: true,
+        websiteUrl: false,
+        mediaRecordings: false,
+        studentAnnotation: false,
+        fileUploads: true,
+      },
+      assignTo: "Everyone",
+      dueDate: "2026-12-31",
       availableFrom: "2026-01-01",
       availableUntil: "2026-12-31",
     });
@@ -89,15 +100,16 @@ export default function Assignments() {
                     href={`/courses/${cid}/assignments/${assignment._id}`}
                     className="wd-assignment-link text-dark fw-bold text-decoration-none"
                   >
-                    {assignment.title}
+                    {assignment.name}
                   </Link>
                   <br />
                   <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                    <b>Not available until</b> {formatDate(assignment.availableFrom)} |
+                    <span className="text-danger">{assignment.assignmentGroup}</span> |{" "}
+                    <b>Not available until</b> {formatDate(assignment.availableUntil)} |
                   </span>
                   <br />
                   <span className="text-muted" style={{ fontSize: "0.85rem" }}>
-                    <b>Due</b> {formatDate(assignment.due)} | {assignment.points} pts
+                    <b>Due</b> {formatDate(assignment.dueDate)} | {assignment.points} pts
                   </span>
                 </div>
                 <AssignmentControlButtons

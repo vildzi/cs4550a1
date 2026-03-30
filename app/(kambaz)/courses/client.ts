@@ -33,13 +33,24 @@ export type Module = {
 export type Assignment = {
   _id: string;
   course: string;
-  title: string;
+  name: string;
   description: string;
   points: number;
-  due: string;
+  assignmentGroup: string;
+  displayGradeAs: string;
+  submissionType: string;
+  onlineEntryOptions: {
+    textEntry: boolean;
+    websiteUrl: boolean;
+    mediaRecordings: boolean;
+    studentAnnotation: boolean;
+    fileUploads: boolean;
+  };
+  assignTo: string;
+  dueDate: string;
   availableFrom: string;
   availableUntil: string;
-  editing?: boolean;
+  [key: string]: unknown;
 };
 
 export type Enrollment = {
