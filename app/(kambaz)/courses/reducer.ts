@@ -1,44 +1,37 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
-import { courses } from "../database";
-
-export type Course = {
-  _id: string;
-  name: string;
-  number: string;
-  startDate: string;
-  endDate: string;
-  image?: string;
-  description: string;
-  [key: string]: unknown;
-};
+import { Course } from "./client";
 
 type CoursesState = {
   courses: Course[];
 };
 
 const initialState: CoursesState = {
-  courses: courses as Course[],
+  courses: [],
 };
 
 const coursesSlice = createSlice({
   name: "courses",
   initialState,
   reducers: {
-    addNewCourse: (state, { payload: course }: PayloadAction<Course>) => {
-      state.courses = [...state.courses, { ...course, _id: uuidv4() }];
+    setCourses: (state, action: PayloadAction<Course[]>) => {
+      state.courses = action.payload;
     },
-    deleteCourse: (state, { payload: courseId }: PayloadAction<string>) => {
-      state.courses = state.courses.filter((course) => course._id !== courseId);
+    addNewCourse: (state, action: PayloadAction<Course>) => {
+      state.courses = [...state.courses, action.payload];
     },
-    updateCourse: (state, { payload: course }: PayloadAction<Course>) => {
-      state.courses = state.courses.map((c) => (c._id === course._id ? course : c));
+    updateCourse: (state, action: PayloadAction<Course>) => {
+      state.courses = state.courses.map((course) =>
+        course._id === action.payload._id ? action.payload : course
+      );
     },
-    setCourses: (state, { payload: nextCourses }: PayloadAction<Course[]>) => {
-      state.courses = nextCourses;
+    deleteCourse: (state, action: PayloadAction<string>) => {
+      state.courses = state.courses.filter(
+        (course) => course._id !== action.payload
+      );
     },
   },
 });
 
-export const { addNewCourse, deleteCourse, updateCourse, setCourses } = coursesSlice.actions;
+export const { setCourses, addNewCourse, updateCourse, deleteCourse } =
+  coursesSlice.actions;
 export default coursesSlice.reducer;

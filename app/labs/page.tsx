@@ -1,5 +1,6 @@
 import Link from "next/link";
 export default function labs() {
+  const serverRootUrl = process.env.NEXT_PUBLIC_HTTP_SERVER;
   return (
     <div id="wd-labs">
       <h1>Labs</h1>
@@ -20,6 +21,40 @@ export default function labs() {
         <li>
           <Link href="/labs/lab4" id="wd-lab4-link">
             Lab 4: State Management </Link>
+        </li>
+        <li>
+          <Link href="/labs/lab5" id="wd-lab5-link">
+            Lab 5: REST APIs with Express </Link>
+        </li>
+        <li>
+          <a
+            href="https://github.com/vildzi/cs4550a1"
+            id="wd-github-link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub Repository
+          </a>
+        </li>
+        <li>
+          <a
+            href="https://github.com/vildzi/kambaz-node-server-app"
+            id="wd-github-link-backend"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Backend GitHub Repository
+          </a>
+        </li>
+        <li>
+          <a
+            href={serverRootUrl}
+            id="wd-server-root-link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Server Root URL
+          </a>
         </li>
         <li>
           <Link href="/" id="wd-kambaz-link">

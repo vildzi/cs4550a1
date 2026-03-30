@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, FormControl, FormSelect } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import * as client from "../client";
 import { setCurrentUser } from "../reducer";
 import { RootState } from "../../store";
 
@@ -25,15 +27,41 @@ export default function Profile() {
   const [profile, setProfile] = useState<ProfileUser | null>(() => (currentUser as ProfileUser | null));
 
   useEffect(() => {
-    if (!currentUser) {
-      router.replace("/account/signin");
+    if (currentUser) {
+      setProfile({
+        _id: currentUser._id,
+        username: currentUser.username || "",
+        password: currentUser.password || "",
+        firstName: currentUser.firstName || "",
+        lastName: currentUser.lastName || "",
+        dob: currentUser.dob || "",
+        email: currentUser.email || "",
+        role: currentUser.role || "STUDENT",
+      });
     }
-  }, [currentUser, router]);
+  }, [currentUser]);
 
-  const signout = () => {
+  const updateProfile = async () => {
+    if (!profile?._id) return;
+    const updatedProfile = await client.updateUser(profile as client.User);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     router.push("/account/signin");
   };
+
+  if (!currentUser) {
+    return (
+      <div id="wd-profile-screen">
+        <h1>Profile</h1>
+        <p>No user signed in.</p>
+        <Link href="/account/signin">Go to Sign in</Link>
+      </div>
+    );
+  }
 
   const activeProfile = profile || (currentUser as ProfileUser | null);
 
@@ -71,6 +99,9 @@ export default function Profile() {
         <option value="FACULTY">Faculty</option>
         <option value="STUDENT">Student</option>
       </FormSelect>
+      <Button onClick={updateProfile} className="w-100 btn-primary mb-2">
+        Update
+      </Button>
       <Button onClick={signout} className="w-100 btn-danger" id="wd-signout-btn">
         Sign out
       </Button>

@@ -13,23 +13,15 @@ export default function CoursesLayout({ children }: Readonly<{ children: ReactNo
   const [showSidebar, setShowSidebar] = useState(true);
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
   const course = courses.find((course) => course._id === cid);
-  const enrolled = enrollments.some(
-    (enrollment) => enrollment.user === currentUser?._id && enrollment.course === cid,
-  );
 
   useEffect(() => {
     if (!currentUser) {
       router.replace("/account/signin");
-      return;
     }
-    if (!enrolled) {
-      router.replace("/dashboard");
-    }
-  }, [currentUser, enrolled, router]);
+  }, [currentUser, router]);
 
-  if (!currentUser || !enrolled) {
+  if (!currentUser) {
     return null;
   }
 

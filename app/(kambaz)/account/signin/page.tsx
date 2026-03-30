@@ -5,39 +5,39 @@ import { useState } from "react";
 import { Button, FormControl } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import * as client from "../client";
 import { setCurrentUser } from "../reducer";
-import * as db from "../../database";
-
-type User = {
-  _id: string;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  dob: string;
-  role: string;
-};
 
 export default function Signin() {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const signin = () => {
-    const user = (db.users as User[]).find(
-      (u) => u.username === credentials.username && u.password === credentials.password,
-    );
-    if (!user) {
-      return;
+  const signin = async () => {
+    try {
+      const user = await client.signin(credentials);
+      if (!user) return;
+      dispatch(setCurrentUser(user));
+      router.push("/dashboard");
+    } catch (err: unknown) {
+      const message =
+        typeof err === "object" &&
+        err !== null &&
+        "response" in err &&
+        typeof (err as { response?: { data?: { message?: string } } }).response?.data
+          ?.message === "string"
+          ? (err as { response?: { data?: { message?: string } } }).response!.data!
+              .message!
+          : "Unable to sign in";
+      setError(message);
     }
-    dispatch(setCurrentUser(user));
-    router.push("/dashboard");
   };
 
   return (
     <div id="wd-signin-screen">
       <h1>Sign in</h1>
+      {error && <div className="alert alert-danger">{error}</div>}
       <FormControl id="wd-username"
         value={credentials.username}
         onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}

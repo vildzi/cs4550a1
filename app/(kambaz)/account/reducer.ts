@@ -1,16 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-type User = {
-  _id: string;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  dob: string;
-  role: string;
-  [key: string]: unknown;
-};
+import { User } from "./client";
 
 type AccountState = {
   currentUser: User | null;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormControl, ListGroup, ListGroupItem } from "react-bootstrap";
 import ModulesControls from "./ModulesControls";
 import { BsGripVertical } from "react-icons/bs";
@@ -9,7 +9,9 @@ import ModuleControlButtons from "./ModuleControlButtons";
 import LessonControlButtons from "./LessonControlButtons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { addModule, deleteModule, editModule, Module, updateModule } from "./reducer";
+import { addModule, deleteModule, editModule, setModules, updateModule } from "./reducer";
+import * as client from "../../client";
+import { Module } from "../../client";
 
 type Lesson = {
   _id: string;
@@ -24,27 +26,47 @@ export default function Modules() {
   const dispatch = useDispatch();
   const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
+  const fetchModules = async () => {
+    const modules = await client.findModulesForCourse(cid as string);
+    dispatch(setModules(modules));
+  };
+
+  useEffect(() => {
+    fetchModules();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cid]);
+
+  const onCreateModuleForCourse = async () => {
+    if (!cid || !moduleName.trim()) return;
+    const newModule = await client.createModuleForCourse(cid as string, {
+      name: moduleName,
+      course: cid as string,
+    });
+    dispatch(addModule(newModule));
+    setModuleName("");
+  };
+
+  const onRemoveModule = async (moduleId: string) => {
+    await client.deleteModule(moduleId);
+    dispatch(deleteModule(moduleId));
+  };
+
+  const onUpdateModule = async (module: Module) => {
+    await client.updateModule(module);
+    dispatch(updateModule(module));
+  };
+
   return (
     <div>
       <ModulesControls
         canEdit={canEdit}
         moduleName={moduleName}
         setModuleName={setModuleName}
-        addModule={() => {
-          if (!canEdit) {
-            return;
-          }
-          if (!moduleName.trim()) {
-            return;
-          }
-          dispatch(addModule({ name: moduleName, course: cid as string }));
-          setModuleName("");
-        }}
+        addModule={onCreateModuleForCourse}
       />
       <br /><br /><br />
       <ListGroup id="wd-modules" className="rounded-0">
         {modules
-          .filter((module: Module) => module.course === cid)
           .map((module: Module) => (
             <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray" key={module._id}>
               <div className="wd-title p-3 ps-2 bg-secondary">
@@ -58,7 +80,7 @@ export default function Modules() {
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        dispatch(updateModule({ ...module, editing: false }));
+                        onUpdateModule({ ...module, editing: false });
                       }
                     }}
                     defaultValue={module.name}
@@ -68,15 +90,11 @@ export default function Modules() {
                   moduleId={module._id}
                   canEdit={canEdit}
                   deleteModule={(moduleId) => {
-                    if (!canEdit) {
-                      return;
-                    }
-                    dispatch(deleteModule(moduleId));
+                    if (!canEdit) return;
+                    onRemoveModule(moduleId);
                   }}
                   editModule={(moduleId) => {
-                    if (!canEdit) {
-                      return;
-                    }
+                    if (!canEdit) return;
                     dispatch(editModule(moduleId));
                   }}
                 />
@@ -96,5 +114,3 @@ export default function Modules() {
     </div>
   );
 }
-
-
