@@ -1,41 +1,28 @@
 "use client";
 
-import { Table } from "react-bootstrap";
-import { FaUserCircle } from "react-icons/fa";
-import * as db from "../../../../database";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import PeopleTable from "../../../people/Table";
+import * as coursesClient from "../../../client";
 
-export default function PeopleTable() {
+export default function PeoplePage() {
   const { cid } = useParams();
-  const { users, enrollments } = db;
+  const [users, setUsers] = useState<any[]>([]);
+
+  const fetchUsers = async () => {
+    if (!cid) return;
+    const users = await coursesClient.findUsersForCourse(cid as string);
+    setUsers(users);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cid]);
 
   return (
-    <div id="wd-people-table">
-      <Table striped>
-        <thead>
-          <tr><th>Name</th><th>Login ID</th><th>Section</th><th>Role</th><th>Last Activity</th><th>Total Activity</th></tr>
-        </thead>
-        <tbody>
-          {users
-            .filter((usr) =>
-              enrollments.some((enrollment) => enrollment.user === usr._id && enrollment.course === cid)
-            )
-            .map((user: any) => (
-              <tr key={user._id}>
-                <td className="wd-full-name text-nowrap">
-                  <FaUserCircle className="me-2 fs-1 text-secondary" />
-                  <span className="wd-first-name">{user.firstName} </span>
-                  <span className="wd-last-name">{user.lastName}</span>
-                </td>
-                <td className="wd-login-id">{user.loginId}</td>
-                <td className="wd-section">{user.section}</td>
-                <td className="wd-role">{user.role}</td>
-                <td className="wd-last-activity">{user.lastActivity}</td>
-                <td className="wd-total-activity">{user.totalActivity}</td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
+    <div>
+      <PeopleTable users={users} fetchUsers={fetchUsers} />
     </div>
   );
 }
