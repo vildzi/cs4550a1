@@ -11,6 +11,7 @@ export default function CourseNavigation() {
     { label: "Home", path: `/courses/${cid}/home`, id: "wd-course-home-link", section: "home" },
     { label: "Modules", path: `/courses/${cid}/modules`, id: "wd-course-modules-link", section: "modules" },
     { label: "Assignments", path: `/courses/${cid}/assignments`, id: "wd-course-assignments-link", section: "assignments" },
+    { label: "Quizzes", path: `/courses/${cid}/quizzes`, id: "wd-course-quizzes-link", section: "quizzes" },
     { label: "People", path: `/courses/${cid}/people/table`, id: "wd-course-people-link", section: "people" },
   ];
 
