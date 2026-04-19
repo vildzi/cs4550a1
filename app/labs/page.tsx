@@ -29,7 +29,7 @@ export default function labs() {
         </li>
         <li>
           <a
-            href="https://github.com/vildzi/cs4550a1"
+            href="https://github.com/vildzi/cs4550a1/tree/quizzes"
             id="wd-github-link"
             target="_blank"
             rel="noreferrer"
@@ -39,7 +39,7 @@ export default function labs() {
         </li>
         <li>
           <a
-            href="https://github.com/vildzi/kambaz-node-server-app"
+            href="https://github.com/vildzi/kambaz-node-server-app/tree/quizzes"
             id="wd-github-link-backend"
             target="_blank"
             rel="noreferrer"
