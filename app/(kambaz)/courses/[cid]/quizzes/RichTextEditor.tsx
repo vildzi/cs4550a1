@@ -2,7 +2,7 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
 
 type Props = {
@@ -19,13 +19,17 @@ export default function RichTextEditor({
   disabled = false,
   minHeight = 120,
 }: Props) {
+  const lastEmittedHtml = useRef<string>(value || "");
+
   const editor = useEditor({
     extensions: [StarterKit],
     content: value || "",
     editable: !disabled,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      const html = editor.getHTML();
+      lastEmittedHtml.current = html;
+      onChange(html);
     },
     editorProps: {
       attributes: {
@@ -37,9 +41,11 @@ export default function RichTextEditor({
 
   useEffect(() => {
     if (!editor) return;
-    if (value !== editor.getHTML()) {
-      editor.commands.setContent(value || "", { emitUpdate: false });
-    }
+    const incoming = value || "";
+    if (incoming === lastEmittedHtml.current) return;
+    if (incoming === editor.getHTML()) return;
+    lastEmittedHtml.current = incoming;
+    editor.commands.setContent(incoming);
   }, [value, editor]);
 
   useEffect(() => {

@@ -13,8 +13,7 @@ import {
 } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { BsGripVertical, BsSearch } from "react-icons/bs";
-import { FaPlus, FaBan } from "react-icons/fa";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaBan, FaCheckCircle, FaPlus } from "react-icons/fa";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
