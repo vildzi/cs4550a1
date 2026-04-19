@@ -207,9 +207,11 @@ export default function QuestionEditor({
             Any match will be graded as correct (case-insensitive).
           </div>
           {draft.blanks.map((blank, idx) => (
-            <Row key={idx} className="g-2 mb-2 align-items-center">
+            <Row key={idx} className="g-2 mb-2 align-items-start">
               <Col>
                 <FormControl
+                  as="textarea"
+                  rows={1}
                   value={blank}
                   placeholder={`Possible answer #${idx + 1}`}
                   onChange={(e) => updateBlank(idx, e.target.value)}
